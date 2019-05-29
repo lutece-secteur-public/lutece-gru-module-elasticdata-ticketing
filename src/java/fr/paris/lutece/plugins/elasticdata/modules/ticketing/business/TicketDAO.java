@@ -55,7 +55,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class TicketDAO
 {
 
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit FROM ticketing_ticket";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid FROM ticketing_ticket";
 
     public Collection<DataObject> selectAll( Plugin plugin )
     {
@@ -104,6 +104,7 @@ public class TicketDAO
         ticket.setDomaine( getParentCategory( category, catMap, 1 ) );
         ticket.setDateCreate( daoUtil.getDate( "date_create" ) );
         ticket.setDateClose( daoUtil.getDate( "date_close" ) );
+        ticket.setGuid( daoUtil.getString( "guid" ) );
         long diff = new Date( ).getTime( ) - ticket.getDateCreate( ).getTime( );
         long anciennete = TimeUnit.DAYS.convert( diff, TimeUnit.MILLISECONDS );
         ticket.setAnciennete( anciennete );

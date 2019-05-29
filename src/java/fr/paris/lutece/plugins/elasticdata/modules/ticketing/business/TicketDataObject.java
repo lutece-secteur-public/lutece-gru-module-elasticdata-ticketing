@@ -50,6 +50,7 @@ public class TicketDataObject implements DataObject
     private String _strEntite;
     private long   _nAnciennete;
     private long   _nDelaiReponse;
+    private String _strGuid;
 
     @Override
     public String getTimestamp( )
@@ -174,6 +175,23 @@ public class TicketDataObject implements DataObject
     public void setDelaiReponse( long _nDelaiReponse )
     {
         this._nDelaiReponse = _nDelaiReponse;
+    }
+
+    /**
+     * @return the _strGuid
+     */
+    public String getGuid( )
+    {
+        return _strGuid;
+    }
+
+    /**
+     * @param _strGuid
+     *            the _strGuid to set
+     */
+    public void setGuid( String _strGuid )
+    {
+        this._strGuid = _strGuid;
     }
 
 }
