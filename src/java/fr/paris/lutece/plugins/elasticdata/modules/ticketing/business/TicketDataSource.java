@@ -42,12 +42,15 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
 /**
- * SignalementDataSource
+ * TicketDataSource
  */
 public class TicketDataSource extends AbstractDataSource
 {
+    
+    /** The Constant PLUGIN_NAME. */
     private static final String PLUGIN_NAME = "elasticdata-ticketing";
 
+    /** The plugin. */
     private static Plugin       _plugin     = PluginService.getPlugin( PLUGIN_NAME );
 
     /**

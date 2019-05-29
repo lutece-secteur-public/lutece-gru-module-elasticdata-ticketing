@@ -50,13 +50,21 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
- * TicketDAO
+ * TicketDAO.
  */
 public class TicketDAO
 {
 
+    /** The Constant SQL_QUERY_SELECTALL. */
     private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid FROM ticketing_ticket";
 
+    /**
+     * Select all.
+     *
+     * @param plugin
+     *            the plugin
+     * @return the collection
+     */
     public Collection<DataObject> selectAll( Plugin plugin )
     {
 
@@ -96,6 +104,17 @@ public class TicketDAO
         return ticketList;
     }
 
+    /**
+     * Data to ticket.
+     *
+     * @param daoUtil
+     *            the dao util
+     * @param catMap
+     *            the cat map
+     * @param unitMap
+     *            the unit map
+     * @return the ticket data object
+     */
     private static TicketDataObject dataToTicket( DAOUtil daoUtil, Map<Integer, TicketCategory> catMap, Map<Integer, Unit> unitMap )
     {
         TicketDataObject ticket = new TicketDataObject( );
@@ -125,6 +144,17 @@ public class TicketDAO
         return ticket;
     }
 
+    /**
+     * Gets the parent category.
+     *
+     * @param category
+     *            the category
+     * @param catMap
+     *            the cat map
+     * @param type
+     *            the type
+     * @return the parent category
+     */
     private static String getParentCategory( TicketCategory category, Map<Integer, TicketCategory> catMap, int type )
     {
         if ( category.getCategoryType( ).getId( ) == type )

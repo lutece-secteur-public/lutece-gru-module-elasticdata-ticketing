@@ -38,20 +38,40 @@ import java.util.Date;
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
 
 /**
- * SignalementDataObject
+ * TicketDataObject.
  */
 public class TicketDataObject implements DataObject
 {
 
+    /** The str domaine. */
     private String _strDomaine;
+
+    /** The str thematique. */
     private String _strThematique;
+
+    /** The date create. */
     private Date   _dateCreate;
+
+    /** The date close. */
     private Date   _dateClose;
+
+    /** The str entite. */
     private String _strEntite;
+
+    /** The n anciennete. */
     private long   _nAnciennete;
+
+    /** The n delai reponse. */
     private long   _nDelaiReponse;
+
+    /** The str guid. */
     private String _strGuid;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.paris.lutece.plugins.elasticdata.business.DataObject#getTimestamp()
+     */
     @Override
     public String getTimestamp( )
     {
@@ -59,6 +79,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the domaine.
+     *
      * @return the _strDomaine
      */
     public String getDomaine( )
@@ -67,6 +89,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the domaine.
+     *
      * @param _strDomaine
      *            the _strDomaine to set
      */
@@ -76,6 +100,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the thematique.
+     *
      * @return the _strThematique
      */
     public String getThematique( )
@@ -84,6 +110,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the thematique.
+     *
      * @param _strThematique
      *            the _strThematique to set
      */
@@ -93,6 +121,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the date create.
+     *
      * @return the _dateCreate
      */
     public Date getDateCreate( )
@@ -101,6 +131,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the date create.
+     *
      * @param _dateCreate
      *            the _dateCreate to set
      */
@@ -110,6 +142,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the entite.
+     *
      * @return the _strEntite
      */
     public String getEntite( )
@@ -118,6 +152,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the entite.
+     *
      * @param _strEntite
      *            the _strEntite to set
      */
@@ -127,6 +163,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the date close.
+     *
      * @return the _dateClose
      */
     public Date getDateClose( )
@@ -135,6 +173,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the date close.
+     *
      * @param _dateClose
      *            the _dateClose to set
      */
@@ -144,6 +184,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the anciennete.
+     *
      * @return the _nAnciennete
      */
     public long getAnciennete( )
@@ -152,6 +194,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the anciennete.
+     *
      * @param _nAnciennete
      *            the _nAnciennete to set
      */
@@ -161,6 +205,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the delai reponse.
+     *
      * @return the _nDelaiReponse
      */
     public long getDelaiReponse( )
@@ -169,6 +215,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the delai reponse.
+     *
      * @param _nDelaiReponse
      *            the _nDelaiReponse to set
      */
@@ -178,6 +226,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Gets the guid.
+     *
      * @return the _strGuid
      */
     public String getGuid( )
@@ -186,6 +236,8 @@ public class TicketDataObject implements DataObject
     }
 
     /**
+     * Sets the guid.
+     *
      * @param _strGuid
      *            the _strGuid to set
      */
