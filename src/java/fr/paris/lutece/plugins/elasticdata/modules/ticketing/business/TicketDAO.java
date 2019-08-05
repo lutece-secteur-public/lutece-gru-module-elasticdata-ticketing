@@ -47,6 +47,7 @@ import fr.paris.lutece.plugins.ticketing.business.category.TicketCategoryHome;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -94,9 +95,14 @@ public class TicketDAO
 
         while ( daoUtil.next( ) )
         {
-            TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
-
-            ticketList.add( ticket );
+            try
+            {
+                TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
+                ticketList.add( ticket );
+            } catch ( Exception e )
+            {
+                AppLogService.error( e );
+            }
         }
 
         daoUtil.free( );
@@ -119,16 +125,23 @@ public class TicketDAO
     {
         TicketDataObject ticket = new TicketDataObject( );
         TicketCategory category = catMap.get( daoUtil.getInt( "id_ticket_category" ) );
-        ticket.setThematique( getParentCategory( category, catMap, 2 ) );
-        ticket.setDomaine( getParentCategory( category, catMap, 1 ) );
+        if ( category != null )
+        {
+            ticket.setThematique( getParentCategory( category, catMap, 2 ) );
+            ticket.setDomaine( getParentCategory( category, catMap, 1 ) );
+        }
         ticket.setDateCreate( daoUtil.getDate( "date_create" ) );
         ticket.setDateClose( daoUtil.getDate( "date_close" ) );
         ticket.setGuid( daoUtil.getString( "guid" ) );
-        long diff = new Date( ).getTime( ) - ticket.getDateCreate( ).getTime( );
-        long anciennete = TimeUnit.DAYS.convert( diff, TimeUnit.MILLISECONDS );
-        ticket.setAnciennete( anciennete );
 
-        if ( ticket.getDateClose( ) != null )
+        if ( ticket.getDateCreate( ) != null )
+        {
+            long diff = new Date( ).getTime( ) - ticket.getDateCreate( ).getTime( );
+            long anciennete = TimeUnit.DAYS.convert( diff, TimeUnit.MILLISECONDS );
+            ticket.setAnciennete( anciennete );
+        }
+
+        if ( ( ticket.getDateClose( ) != null ) && ( ticket.getDateCreate( ) != null ) )
         {
             long diffDelaiReponse = ticket.getDateClose( ).getTime( ) - ticket.getDateCreate( ).getTime( );
             long delaiReponse = TimeUnit.DAYS.convert( diffDelaiReponse, TimeUnit.MILLISECONDS );
@@ -157,20 +170,24 @@ public class TicketDAO
      */
     private static String getParentCategory( TicketCategory category, Map<Integer, TicketCategory> catMap, int type )
     {
-        if ( category.getCategoryType( ).getId( ) == type )
+        if ( category != null )
         {
-            return category.getLabel( );
-        } else
-        {
-            TicketCategory ticketCategory = catMap.get( category.getIdParent( ) );
-            if ( ticketCategory.getCategoryType( ).getId( ) == type )
+            if ( category.getCategoryType( ).getId( ) == type )
             {
-                return ticketCategory.getLabel( );
+                return category.getLabel( );
             } else
             {
-                return getParentCategory( ticketCategory, catMap, type );
+                TicketCategory ticketCategory = catMap.get( category.getIdParent( ) );
+                if ( ticketCategory.getCategoryType( ).getId( ) == type )
+                {
+                    return ticketCategory.getLabel( );
+                } else
+                {
+                    return getParentCategory( ticketCategory, catMap, type );
+                }
             }
         }
+        return null;
     }
 
 }
