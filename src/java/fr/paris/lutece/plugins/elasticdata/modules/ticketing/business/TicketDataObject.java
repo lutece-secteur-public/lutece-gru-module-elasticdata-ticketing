@@ -66,6 +66,8 @@ public class TicketDataObject implements DataObject
 
     /** The str guid. */
     private String _strGuid;
+    
+    private Integer _idTicket;
 
     /*
      * (non-Javadoc)
@@ -245,5 +247,17 @@ public class TicketDataObject implements DataObject
     {
         this._strGuid = _strGuid;
     }
+
+    public Integer getIdTicket( )
+    {
+        return _idTicket;
+    }
+
+    public void setIdTicket( Integer idTicket )
+    {
+        _idTicket = idTicket;
+    }
+    
+    
 
 }

@@ -57,7 +57,7 @@ public class TicketDAO
 {
 
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid FROM ticketing_ticket";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket FROM ticketing_ticket";
 
     /**
      * Select all.
@@ -87,7 +87,7 @@ public class TicketDAO
             catMap.put( cat.getId( ), cat );
         }
 
-        List<DataObject> ticketList = new ArrayList<DataObject>( );
+        List<DataObject> ticketList = new ArrayList<>( );
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
 
@@ -99,7 +99,8 @@ public class TicketDAO
             {
                 TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
                 ticketList.add( ticket );
-            } catch ( Exception e )
+            }
+            catch ( Exception e )
             {
                 AppLogService.error( e );
             }
@@ -133,6 +134,7 @@ public class TicketDAO
         ticket.setDateCreate( daoUtil.getDate( "date_create" ) );
         ticket.setDateClose( daoUtil.getDate( "date_close" ) );
         ticket.setGuid( daoUtil.getString( "guid" ) );
+        ticket.setIdTicket( daoUtil.getInt( "id_ticket" ) );
 
         if ( ticket.getDateCreate( ) != null )
         {
@@ -175,13 +177,15 @@ public class TicketDAO
             if ( category.getCategoryType( ).getId( ) == type )
             {
                 return category.getLabel( );
-            } else
+            }
+            else
             {
                 TicketCategory ticketCategory = catMap.get( category.getIdParent( ) );
                 if ( ticketCategory.getCategoryType( ).getId( ) == type )
                 {
                     return ticketCategory.getLabel( );
-                } else
+                }
+                else
                 {
                     return getParentCategory( ticketCategory, catMap, type );
                 }
