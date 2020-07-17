@@ -57,7 +57,7 @@ public class TicketDAO
 {
 
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket FROM ticketing_ticket";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel";
 
     /**
      * Select all.
@@ -130,6 +130,17 @@ public class TicketDAO
         {
             ticket.setThematique( getParentCategory( category, catMap, 2 ) );
             ticket.setDomaine( getParentCategory( category, catMap, 1 ) );
+            try {
+                ticket.setSousThematique( getParentCategory( category, catMap, 3 ) );
+            } catch (NullPointerException e) {
+                ticket.setSousThematique( "" );
+            }
+            
+            try {
+                ticket.setLocalisation( getParentCategory( category, catMap, 4 ) );
+            } catch (NullPointerException e) {
+                ticket.setLocalisation( "" );
+            }
         }
         ticket.setDateCreate( daoUtil.getDate( "date_create" ) );
         ticket.setDateClose( daoUtil.getDate( "date_close" ) );
@@ -155,6 +166,9 @@ public class TicketDAO
         {
             ticket.setEntite( unit.getLabel( ) );
         }
+        
+        ticket.setCanal( daoUtil.getString( "label" ) );
+        ticket.setStatut( daoUtil.getString( "name" ) );
 
         return ticket;
     }
