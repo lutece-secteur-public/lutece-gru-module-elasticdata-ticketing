@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -57,7 +58,8 @@ public class TicketDAO
 {
 
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
+            + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
 
     /**
      * Select all.
@@ -66,7 +68,7 @@ public class TicketDAO
      *            the plugin
      * @return the collection
      */
-    public Collection<DataObject> selectAll( Plugin plugin )
+    public Collection<DataObject> selectAll( Plugin plugin, Timestamp lastIndexation )
     {
 
         List<Unit> units = UnitHome.findAll( );
@@ -89,7 +91,10 @@ public class TicketDAO
 
         List<DataObject> ticketList = new ArrayList<>( );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX, plugin );
+        daoUtil.setTimestamp( 1, lastIndexation );
+        daoUtil.setTimestamp( 2, lastIndexation );
+        daoUtil.setTimestamp( 3, lastIndexation );
 
         daoUtil.executeQuery( );
 
@@ -135,7 +140,7 @@ public class TicketDAO
             } catch (NullPointerException e) {
                 ticket.setSousThematique( "" );
             }
-            
+
             try {
                 ticket.setLocalisation( getParentCategory( category, catMap, 4 ) );
             } catch (NullPointerException e) {
@@ -166,7 +171,7 @@ public class TicketDAO
         {
             ticket.setEntite( unit.getLabel( ) );
         }
-        
+
         ticket.setCanal( daoUtil.getString( "label" ) );
         ticket.setStatut( daoUtil.getString( "name" ) );
 

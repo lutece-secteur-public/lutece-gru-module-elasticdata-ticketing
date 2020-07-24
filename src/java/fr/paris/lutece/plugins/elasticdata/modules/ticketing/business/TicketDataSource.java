@@ -34,10 +34,14 @@
 
 package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import fr.paris.lutece.plugins.elasticdata.business.AbstractDataSource;
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
@@ -46,9 +50,10 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
  */
 public class TicketDataSource extends AbstractDataSource
 {
-    
+
     /** The Constant PLUGIN_NAME. */
     private static final String PLUGIN_NAME = "elasticdata-ticketing";
+    private static final String KEY_DATE_LAST_INDEXATION = "ticketing.configuration.date.last.indexation";
 
     /** The plugin. */
     private static Plugin       _plugin     = PluginService.getPlugin( PLUGIN_NAME );
@@ -59,8 +64,18 @@ public class TicketDataSource extends AbstractDataSource
     @Override
     public Collection<DataObject> getDataObjects( )
     {
+        Date date = new Date( );
+        Timestamp currentTimestamp = new Timestamp(date.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDate = sdf.format( currentTimestamp );
+        String lastIndexation = DatastoreService.getDataValue( KEY_DATE_LAST_INDEXATION, currentDate);
+
         TicketDAO dao = new TicketDAO( );
-        return dao.selectAll( _plugin );
+        Collection<DataObject> ticketsToIndex = dao.selectAll( _plugin, Timestamp.valueOf(lastIndexation) );
+
+        DatastoreService.setDataValue( KEY_DATE_LAST_INDEXATION, currentDate );
+
+        return ticketsToIndex;
     }
 
     /**
