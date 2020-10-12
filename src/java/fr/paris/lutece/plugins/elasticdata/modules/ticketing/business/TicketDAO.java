@@ -45,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
 import fr.paris.lutece.plugins.ticketing.business.category.TicketCategory;
 import fr.paris.lutece.plugins.ticketing.business.category.TicketCategoryHome;
+import fr.paris.lutece.plugins.ticketing.business.resourcehistory.DateActionWorkflow;
+import fr.paris.lutece.plugins.ticketing.business.resourcehistory.ResourceWorkflowHistoryDAO;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -103,9 +105,26 @@ public class TicketDAO
             try
             {
                 TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
+
+                ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
+                DateActionWorkflow daw = rwhDAO.getCompleteResourceWorkflowHistory( ticket.getIdTicket( ), plugin );
+                ticket.setDateAssignation( daw.getDateAssignment( ) );
+                ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
+                ticket.setDateLastClimb( daw.getDateLastClimb( ) );
+                ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
+                ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
+                ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
+                ticket.setDateLastAdditionalRequest( daw.getDateLastAdditionalRequest( ) );
+                ticket.setDateLastAdditionalRequestResponse( daw.getDateLastAdditionalRequestResponse( ) );
+                ticket.setDateLastAssignmentN2toN1( daw.getDateLastAssignmentN2toN1( ) );
+                ticket.setDelayPriseEnCharge( daw.getTimeSupport( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                ticket.setDelayReassignation( daw.getDelayReassignationN1toN2( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                ticket.setDelayN3( daw.getDelayATCM( ) );
+                ticket.setDelayATCM( daw.getDelayATCM( ) );
+                ticket.setDelayComplement( daw.getDelayComplement( ) );
+
                 ticketList.add( ticket );
-            }
-            catch ( Exception e )
+            } catch ( Exception e )
             {
                 AppLogService.error( e );
             }
@@ -135,15 +154,19 @@ public class TicketDAO
         {
             ticket.setThematique( getParentCategory( category, catMap, 2 ) );
             ticket.setDomaine( getParentCategory( category, catMap, 1 ) );
-            try {
+            try
+            {
                 ticket.setSousThematique( getParentCategory( category, catMap, 3 ) );
-            } catch (NullPointerException e) {
+            } catch ( NullPointerException e )
+            {
                 ticket.setSousThematique( "" );
             }
 
-            try {
+            try
+            {
                 ticket.setLocalisation( getParentCategory( category, catMap, 4 ) );
-            } catch (NullPointerException e) {
+            } catch ( NullPointerException e )
+            {
                 ticket.setLocalisation( "" );
             }
         }
@@ -196,15 +219,13 @@ public class TicketDAO
             if ( category.getCategoryType( ).getId( ) == type )
             {
                 return category.getLabel( );
-            }
-            else
+            } else
             {
                 TicketCategory ticketCategory = catMap.get( category.getIdParent( ) );
                 if ( ticketCategory.getCategoryType( ).getId( ) == type )
                 {
                     return ticketCategory.getLabel( );
-                }
-                else
+                } else
                 {
                     return getParentCategory( ticketCategory, catMap, type );
                 }

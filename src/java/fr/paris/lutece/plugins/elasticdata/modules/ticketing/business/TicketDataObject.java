@@ -74,8 +74,36 @@ public class TicketDataObject implements DataObject
     private String  _strStatut;
 
     private String  _strCanal;
-    
+
     private String  _strLocalisation;
+
+    private Date    _dDateAssignment;
+
+    private Date    _dDateLastReAssignmentN1toN2;
+
+    private Date    _dDateLastClimb;
+
+    private Date    _dDateLastResponseN3;
+
+    private Date    _dDateLastSollicitationATCM;
+
+    private Date    _dDateLastResponseATCM;
+
+    private Date    _dDateLastAdditionalRequest;
+
+    private Date    _dDateLastAdditionalRequestResponse;
+
+    private Date    _dDateLastAssignmentN2toN1;
+
+    private String  _strDelayPriseEnCharge;
+
+    private String  _strDelayReassignation;
+
+    private String  _strDelayN3;
+
+    private String  _strDelayATCM;
+
+    private String  _strDelayComplement;
 
     /*
      * (non-Javadoc)
@@ -305,5 +333,145 @@ public class TicketDataObject implements DataObject
     {
         this._strLocalisation = _strLocalisation;
     }
-    
+
+    public Date getDateAssignment( )
+    {
+        return _dDateAssignment;
+    }
+
+    public void setDateAssignation( Date dateAssignment )
+    {
+        _dDateAssignment = dateAssignment;
+    }
+
+    public Date getDateLastReAssignmentN1toN2( )
+    {
+        return _dDateLastReAssignmentN1toN2;
+    }
+
+    public Date getDateLastClimb( )
+    {
+        return _dDateLastClimb;
+    }
+
+    public Date getDateLastResponseN3( )
+    {
+        return _dDateLastResponseN3;
+    }
+
+    public Date getDateLastSollicitationATCM( )
+    {
+        return _dDateLastSollicitationATCM;
+    }
+
+    public Date getDateLastResponseATCM( )
+    {
+        return _dDateLastResponseATCM;
+    }
+
+    public Date getDateLastAdditionalRequest( )
+    {
+        return _dDateLastAdditionalRequest;
+    }
+
+    public Date getDateLastAdditionalRequestResponse( )
+    {
+        return _dDateLastAdditionalRequestResponse;
+    }
+
+    public Date getDateLastAssignmentN2toN1( )
+    {
+        return _dDateLastAssignmentN2toN1;
+    }
+
+    public String getDelayPriseEnCharge( )
+    {
+        return _strDelayPriseEnCharge;
+    }
+
+    public String getDelayReassignation( )
+    {
+        return _strDelayReassignation;
+    }
+
+    public String getDelayN3( )
+    {
+        return _strDelayN3;
+    }
+
+    public String getDelayATCM( )
+    {
+        return _strDelayATCM;
+    }
+
+    public String getDelayComplement( )
+    {
+        return _strDelayComplement;
+    }
+
+    public void setDateLastReAssignmentN1toN2( Date dateLastReAssignmentN1toN2 )
+    {
+        _dDateLastReAssignmentN1toN2 = dateLastReAssignmentN1toN2;
+    }
+
+    public void setDateLastClimb( Date dateLastClimb )
+    {
+        _dDateLastClimb = dateLastClimb;
+    }
+
+    public void setDateLastResponseN3( Date dateLastResponseN3 )
+    {
+        _dDateLastResponseN3 = dateLastResponseN3;
+    }
+
+    public void setDateLastSollicitationATCM( Date dateLastSollicitationATCM )
+    {
+        _dDateLastSollicitationATCM = dateLastSollicitationATCM;
+    }
+
+    public void setDateLastResponseATCM( Date dateLastResponseATCM )
+    {
+        _dDateLastResponseATCM = dateLastResponseATCM;
+    }
+
+    public void setDateLastAdditionalRequest( Date dateLastAdditionalRequest )
+    {
+        _dDateLastAdditionalRequest = dateLastAdditionalRequest;
+    }
+
+    public void setDateLastAdditionalRequestResponse( Date dateLastAdditionalRequestResponse )
+    {
+        _dDateLastAdditionalRequestResponse = dateLastAdditionalRequestResponse;
+    }
+
+    public void setDateLastAssignmentN2toN1( Date dateLastAssignmentN2toN1 )
+    {
+        _dDateLastAssignmentN2toN1 = dateLastAssignmentN2toN1;
+    }
+
+    public void setDelayPriseEnCharge( String delayPriseEnCharge )
+    {
+        _strDelayPriseEnCharge = delayPriseEnCharge;
+    }
+
+    public void setDelayReassignation( String delayReassignation )
+    {
+        _strDelayReassignation = delayReassignation;
+    }
+
+    public void setDelayN3( String delayN3 )
+    {
+        _strDelayN3 = delayN3;
+    }
+
+    public void setDelayATCM( String delayATCM )
+    {
+        _strDelayATCM = delayATCM;
+    }
+
+    public void setDelayComplement( String delayComplement )
+    {
+        _strDelayComplement = delayComplement;
+    }
+
 }
