@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
@@ -47,6 +48,8 @@ import fr.paris.lutece.plugins.ticketing.business.category.TicketCategory;
 import fr.paris.lutece.plugins.ticketing.business.category.TicketCategoryHome;
 import fr.paris.lutece.plugins.ticketing.business.resourcehistory.DateActionWorkflow;
 import fr.paris.lutece.plugins.ticketing.business.resourcehistory.ResourceWorkflowHistoryDAO;
+import fr.paris.lutece.plugins.ticketing.business.ticket.Ticket;
+import fr.paris.lutece.plugins.ticketing.web.util.CSVUtils;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -92,6 +95,7 @@ public class TicketDAO
         }
 
         List<DataObject> ticketList = new ArrayList<>( );
+        List<TicketDataObject> ticketDataObjectList = new ArrayList<>( );
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX, plugin );
         daoUtil.setTimestamp( 1, lastIndexation );
@@ -99,18 +103,34 @@ public class TicketDAO
         daoUtil.setTimestamp( 3, lastIndexation );
 
         daoUtil.executeQuery( );
+        List<Integer> ids = new ArrayList<>( );
 
         while ( daoUtil.next( ) )
         {
             try
             {
                 TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
+                ids.add( ticket.getIdTicket( ) );
+                ticketDataObjectList.add( ticket );
+            } catch ( Exception e )
+            {
+                AppLogService.error( e );
+            }
+        }
 
-                ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
-                DateActionWorkflow daw = rwhDAO.getCompleteResourceWorkflowHistory( ticket.getIdTicket( ), plugin );
+        ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
+        List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
+            
+        for ( TicketDataObject ticket : ticketDataObjectList )
+        {
+            Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
+                    .filter( dateActionWorkflow -> dateActionWorkflow.getIdTicket( ) == ticket.getIdTicket( ) ).findFirst( );
+            if ( optDaw.isPresent( ) )
+            {
+                DateActionWorkflow daw = optDaw.get( );
                 ticket.setDateAssignation( daw.getDateAssignment( ) );
                 ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
-                ticket.setDateLastClimb( daw.getDateLastClimb( ) );
+                ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
                 ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
                 ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
                 ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
@@ -122,14 +142,10 @@ public class TicketDAO
                 ticket.setDelayN3( daw.getDelayATCM( ) );
                 ticket.setDelayATCM( daw.getDelayATCM( ) );
                 ticket.setDelayComplement( daw.getDelayComplement( ) );
-
-                ticketList.add( ticket );
-            } catch ( Exception e )
-            {
-                AppLogService.error( e );
             }
+            ticketList.add( ticket );
         }
-
+        
         daoUtil.free( );
 
         return ticketList;
