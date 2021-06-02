@@ -118,33 +118,40 @@ public class TicketDAO
             }
         }
 
+        AppLogService.info( "Elastic Search selectAll - Nb ticket : " + ids.size( ) );
+        
         ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
-        List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
-            
-        for ( TicketDataObject ticket : ticketDataObjectList )
+        
+        if( !ids.isEmpty( ) )
         {
-            Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
-                    .filter( dateActionWorkflow -> dateActionWorkflow.getIdTicket( ) == ticket.getIdTicket( ) ).findFirst( );
-            if ( optDaw.isPresent( ) )
+            List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
+            
+            for ( TicketDataObject ticket : ticketDataObjectList )
             {
-                DateActionWorkflow daw = optDaw.get( );
-                ticket.setDateAssignation( daw.getDateAssignment( ) );
-                ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
-                ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
-                ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
-                ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
-                ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
-                ticket.setDateLastAdditionalRequest( daw.getDateLastAdditionalRequest( ) );
-                ticket.setDateLastAdditionalRequestResponse( daw.getDateLastAdditionalRequestResponse( ) );
-                ticket.setDateLastAssignmentN2toN1( daw.getDateLastAssignmentN2toN1( ) );
-                ticket.setDelayPriseEnCharge( daw.getTimeSupport( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
-                ticket.setDelayReassignation( daw.getDelayReassignationN1toN2( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
-                ticket.setDelayN3( daw.getDelayATCM( ) );
-                ticket.setDelayATCM( daw.getDelayATCM( ) );
-                ticket.setDelayComplement( daw.getDelayComplement( ) );
-            }
-            ticketList.add( ticket );
+                Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
+                        .filter( dateActionWorkflow -> dateActionWorkflow.getIdTicket( ) == ticket.getIdTicket( ) ).findFirst( );
+                if ( optDaw.isPresent( ) )
+                {
+                    DateActionWorkflow daw = optDaw.get( );
+                    ticket.setDateAssignation( daw.getDateAssignment( ) );
+                    ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
+                    ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
+                    ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
+                    ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
+                    ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
+                    ticket.setDateLastAdditionalRequest( daw.getDateLastAdditionalRequest( ) );
+                    ticket.setDateLastAdditionalRequestResponse( daw.getDateLastAdditionalRequestResponse( ) );
+                    ticket.setDateLastAssignmentN2toN1( daw.getDateLastAssignmentN2toN1( ) );
+                    ticket.setDelayPriseEnCharge( daw.getTimeSupport( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                    ticket.setDelayReassignation( daw.getDelayReassignationN1toN2( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                    ticket.setDelayN3( daw.getDelayATCM( ) );
+                    ticket.setDelayATCM( daw.getDelayATCM( ) );
+                    ticket.setDelayComplement( daw.getDelayComplement( ) );
+                }
+                ticketList.add( ticket );
+            } 
         }
+        
         
         daoUtil.free( );
 
