@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -68,10 +69,12 @@ public class TicketDataSource extends AbstractDataSource
         Timestamp currentTimestamp = new Timestamp(date.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDate = sdf.format( currentTimestamp );
-        String lastIndexation = DatastoreService.getDataValue( KEY_DATE_LAST_INDEXATION, currentDate);
-
+        
         TicketDAO dao = new TicketDAO( );
-        Collection<DataObject> ticketsToIndex = dao.selectAll( _plugin, Timestamp.valueOf(lastIndexation) );
+        
+        Collection<DataObject> ticketsToIndex;
+        
+        ticketsToIndex = dao.selectAll( _plugin );
 
         DatastoreService.setDataValue( KEY_DATE_LAST_INDEXATION, currentDate );
 
