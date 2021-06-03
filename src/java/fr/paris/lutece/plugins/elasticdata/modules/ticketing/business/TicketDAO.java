@@ -63,17 +63,20 @@ public class TicketDAO
 {
 
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
+    
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel";
 
+    
     /**
-     * Select all.
+     * Select all incrementally.
      *
-     * @param plugin
-     *            the plugin
+     * @param plugin the plugin
+     * @param lastIndexation the last indexation
      * @return the collection
      */
-    public Collection<DataObject> selectAll( Plugin plugin, Timestamp lastIndexation )
+    public Collection<DataObject> selectAllIncrementally( Plugin plugin, Timestamp lastIndexation )
     {
 
         List<Unit> units = UnitHome.findAll( );
@@ -94,16 +97,16 @@ public class TicketDAO
             catMap.put( cat.getId( ), cat );
         }
 
-        List<DataObject> ticketList = new ArrayList<>( );
         List<TicketDataObject> ticketDataObjectList = new ArrayList<>( );
+        List<Integer> ids = new ArrayList<>( );
+        
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY, plugin );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX, plugin );
         daoUtil.setTimestamp( 1, lastIndexation );
         daoUtil.setTimestamp( 2, lastIndexation );
         daoUtil.setTimestamp( 3, lastIndexation );
 
         daoUtil.executeQuery( );
-        List<Integer> ids = new ArrayList<>( );
 
         while ( daoUtil.next( ) )
         {
@@ -117,45 +120,60 @@ public class TicketDAO
                 AppLogService.error( e );
             }
         }
-
-        AppLogService.info( "Elastic Search selectAll - Nb ticket : " + ids.size( ) );
-        
-        ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
-        
-        if( !ids.isEmpty( ) )
-        {
-            List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
-            
-            for ( TicketDataObject ticket : ticketDataObjectList )
-            {
-                Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
-                        .filter( dateActionWorkflow -> dateActionWorkflow.getIdTicket( ) == ticket.getIdTicket( ) ).findFirst( );
-                if ( optDaw.isPresent( ) )
-                {
-                    DateActionWorkflow daw = optDaw.get( );
-                    ticket.setDateAssignation( daw.getDateAssignment( ) );
-                    ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
-                    ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
-                    ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
-                    ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
-                    ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
-                    ticket.setDateLastAdditionalRequest( daw.getDateLastAdditionalRequest( ) );
-                    ticket.setDateLastAdditionalRequestResponse( daw.getDateLastAdditionalRequestResponse( ) );
-                    ticket.setDateLastAssignmentN2toN1( daw.getDateLastAssignmentN2toN1( ) );
-                    ticket.setDelayPriseEnCharge( daw.getTimeSupport( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
-                    ticket.setDelayReassignation( daw.getDelayReassignationN1toN2( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
-                    ticket.setDelayN3( daw.getDelayATCM( ) );
-                    ticket.setDelayATCM( daw.getDelayATCM( ) );
-                    ticket.setDelayComplement( daw.getDelayComplement( ) );
-                }
-                ticketList.add( ticket );
-            } 
-        }
-        
         
         daoUtil.free( );
+        
+        return fillTicketList( ids, ticketDataObjectList, plugin );
+    }
 
-        return ticketList;
+    
+    /**
+     * Select all.
+     *
+     * @param plugin the plugin
+     * @return the collection
+     */
+    public Collection<DataObject> selectAll( Plugin plugin )
+    {
+        List<Unit> units = UnitHome.findAll( );
+
+        Map<Integer, Unit> unitMap = new HashMap<>( );
+
+        for ( Unit unit : units )
+        {
+            unitMap.put( unit.getIdUnit( ), unit );
+        }
+
+        List<TicketCategory> categories = TicketCategoryHome.getCategorysList( );
+
+        Map<Integer, TicketCategory> catMap = new HashMap<>( );
+
+        for ( TicketCategory cat : categories )
+        {
+            catMap.put( cat.getId( ), cat );
+        }
+
+        List<TicketDataObject> ticketDataObjectList = new ArrayList<>( );
+        List<Integer> ids = new ArrayList<>( );
+
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX, plugin );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+            try
+            {
+                TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
+                ids.add( ticket.getIdTicket( ) );
+                ticketDataObjectList.add( ticket );
+            } catch ( Exception e )
+            {
+                AppLogService.error( e );
+            }
+        }
+        daoUtil.free( );
+
+        return fillTicketList( ids, ticketDataObjectList, plugin );
     }
 
     /**
@@ -255,6 +273,55 @@ public class TicketDAO
             }
         }
         return null;
+    }
+
+    /**
+     * Fill ticket list.
+     *
+     * @param ids the ids
+     * @param ticketDataObjectList the ticket data object list
+     * @param plugin the plugin
+     * @return the list
+     */
+    private List<DataObject> fillTicketList( List<Integer> ids, List<TicketDataObject> ticketDataObjectList, Plugin plugin )
+    {
+        List<DataObject> ticketList = new ArrayList<>( );
+        
+        AppLogService.info( "Elastic Search selectAll - Nb ticket : " + ids.size( ) );
+        
+        ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
+        
+        if( !ids.isEmpty( ) )
+        {
+            List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
+            
+            for ( TicketDataObject ticket : ticketDataObjectList )
+            {
+                Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
+                        .filter( dateActionWorkflow -> dateActionWorkflow.getIdTicket( ) == ticket.getIdTicket( ) ).findFirst( );
+                if ( optDaw.isPresent( ) )
+                {
+                    DateActionWorkflow daw = optDaw.get( );
+                    ticket.setDateAssignation( daw.getDateAssignment( ) );
+                    ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
+                    ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
+                    ticket.setDateLastResponseN3( daw.getDateLastResponseN3( ) );
+                    ticket.setDateLastSollicitationATCM( daw.getDateLastSollicitationATCM( ) );
+                    ticket.setDateLastResponseATCM( daw.getDateLastResponseATCM( ) );
+                    ticket.setDateLastAdditionalRequest( daw.getDateLastAdditionalRequest( ) );
+                    ticket.setDateLastAdditionalRequestResponse( daw.getDateLastAdditionalRequestResponse( ) );
+                    ticket.setDateLastAssignmentN2toN1( daw.getDateLastAssignmentN2toN1( ) );
+                    ticket.setDelayPriseEnCharge( daw.getTimeSupport( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                    ticket.setDelayReassignation( daw.getDelayReassignationN1toN2( new Timestamp( ticket.getDateCreate( ).getTime( ) ) ) );
+                    ticket.setDelayN3( daw.getDelayATCM( ) );
+                    ticket.setDelayATCM( daw.getDelayATCM( ) );
+                    ticket.setDelayComplement( daw.getDelayComplement( ) );
+                }
+                ticketList.add( ticket );
+            } 
+        }
+        
+        return ticketList;
     }
 
 }
