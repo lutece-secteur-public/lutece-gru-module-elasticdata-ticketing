@@ -66,7 +66,7 @@ public class TicketDAO
     private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
     
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel WHERE date_create > DATE_SUB(NOW(), INTERVAL 1 DAY )";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel WHERE date_update > DATE_SUB(NOW(), INTERVAL 1 DAY )";
 
     
     /**
