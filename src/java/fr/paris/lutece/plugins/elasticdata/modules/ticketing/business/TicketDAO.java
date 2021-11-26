@@ -48,8 +48,6 @@ import fr.paris.lutece.plugins.ticketing.business.category.TicketCategory;
 import fr.paris.lutece.plugins.ticketing.business.category.TicketCategoryHome;
 import fr.paris.lutece.plugins.ticketing.business.resourcehistory.DateActionWorkflow;
 import fr.paris.lutece.plugins.ticketing.business.resourcehistory.ResourceWorkflowHistoryDAO;
-import fr.paris.lutece.plugins.ticketing.business.ticket.Ticket;
-import fr.paris.lutece.plugins.ticketing.web.util.CSVUtils;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -65,10 +63,10 @@ public class TicketDAO
     /** The Constant SQL_QUERY_SELECTALL. */
     private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
-    
+
     private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel WHERE date_update > DATE_SUB(NOW(), INTERVAL 1 DAY )";
 
-    
+
     /**
      * Select all incrementally.
      *
@@ -99,7 +97,7 @@ public class TicketDAO
 
         List<TicketDataObject> ticketDataObjectList = new ArrayList<>( );
         List<Integer> ids = new ArrayList<>( );
-        
+
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY, plugin );
 
         daoUtil.setTimestamp( 1, lastIndexation );
@@ -120,13 +118,13 @@ public class TicketDAO
                 AppLogService.error( e );
             }
         }
-        
+
         daoUtil.free( );
-        
+
         return fillTicketList( ids, ticketDataObjectList, plugin );
     }
 
-    
+
     /**
      * Select all.
      *
@@ -238,7 +236,7 @@ public class TicketDAO
 
         ticket.setCanal( daoUtil.getString( "label" ) );
         ticket.setStatut( daoUtil.getString( "name" ) );
-        ticket.setArrondissement( daoUtil.getString( "arrondissement" ) );
+        ticket.setArrondissement( daoUtil.getInt( "arrondissement" ) );
 
         return ticket;
     }
@@ -287,15 +285,15 @@ public class TicketDAO
     private List<DataObject> fillTicketList( List<Integer> ids, List<TicketDataObject> ticketDataObjectList, Plugin plugin )
     {
         List<DataObject> ticketList = new ArrayList<>( );
-        
+
         AppLogService.info( "Elastic Search selectAll - Nb ticket : " + ids.size( ) );
-        
+
         ResourceWorkflowHistoryDAO rwhDAO = new ResourceWorkflowHistoryDAO( );
-        
+
         if( !ids.isEmpty( ) )
         {
             List<DateActionWorkflow> listDateActionWorkflow = rwhDAO.getCompleteResourceWorkflowHistory( ids, plugin );
-            
+
             for ( TicketDataObject ticket : ticketDataObjectList )
             {
                 Optional<DateActionWorkflow> optDaw = listDateActionWorkflow.stream( )
@@ -319,9 +317,9 @@ public class TicketDAO
                     ticket.setDelayComplement( daw.getDelayComplement( ) );
                 }
                 ticketList.add( ticket );
-            } 
+            }
         }
-        
+
         return ticketList;
     }
 
