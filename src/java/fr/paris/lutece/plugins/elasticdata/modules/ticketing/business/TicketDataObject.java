@@ -104,8 +104,10 @@ public class TicketDataObject implements DataObject
     private String  _strDelayATCM;
 
     private String  _strDelayComplement;
-    
+
     private Integer _nArrondissement;
+
+    private String _strId;
 
     /*
      * (non-Javadoc)
@@ -475,7 +477,7 @@ public class TicketDataObject implements DataObject
     {
         _strDelayComplement = delayComplement;
     }
-    
+
     public Integer getArrondissement( )
     {
         return _nArrondissement;
@@ -484,6 +486,36 @@ public class TicketDataObject implements DataObject
     public void setArrondissement( Integer arrondissement )
     {
         _nArrondissement = arrondissement;
+    }
+
+    @Override
+    public String getId( )
+    {
+        return _strId;
+    }
+
+    @Override
+    public void setId( String strId )
+    {
+        _strId = strId;
+    }
+
+    @Override
+    public String getParentId( )
+    {
+        return null;
+    }
+
+    @Override
+    public String getParentName( )
+    {
+        return null;
+    }
+
+    @Override
+    public String getDocumentTypeName( )
+    {
+        return "Ticket";
     }
 
 }

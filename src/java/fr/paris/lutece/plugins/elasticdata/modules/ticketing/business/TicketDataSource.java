@@ -36,9 +36,8 @@ package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import fr.paris.lutece.plugins.elasticdata.business.AbstractDataSource;
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
@@ -63,18 +62,16 @@ public class TicketDataSource extends AbstractDataSource
      * {@inheritDoc }
      */
     @Override
-    public Collection<DataObject> getDataObjects( )
+    public List<DataObject> getDataObjects(  List<String> listIdDataObjects  )
     {
         Date date = new Date( );
         Timestamp currentTimestamp = new Timestamp(date.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDate = sdf.format( currentTimestamp );
-        
+
         TicketDAO dao = new TicketDAO( );
-        
-        Collection<DataObject> ticketsToIndex;
-        
-        ticketsToIndex = dao.selectAll( _plugin );
+
+        List<DataObject> ticketsToIndex = dao.selectAll( _plugin );
 
         DatastoreService.setDataValue( KEY_DATE_LAST_INDEXATION, currentDate );
 
@@ -89,5 +86,13 @@ public class TicketDataSource extends AbstractDataSource
     {
         return true;
     }
+
+    @Override
+    public List<String> getIdDataObjects( )
+    {
+        TicketDAO dao = new TicketDAO( );
+        return dao.selectIdTicketsList( _plugin );
+    }
+
 
 }

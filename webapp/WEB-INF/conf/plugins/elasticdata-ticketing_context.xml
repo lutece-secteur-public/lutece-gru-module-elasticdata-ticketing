@@ -9,7 +9,6 @@
            <property name="id" value="TicketDataSource" />
            <property name="name" value="Base des tickets" />
            <property name="targetIndexName" value="tickets" />
-           <property name="dataType" value="ticket" />
            <property name="fullIndexingDaemon" value="true" />
        </bean>
 
