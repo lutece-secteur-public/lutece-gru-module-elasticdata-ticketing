@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import fr.paris.lutece.plugins.elasticdata.business.DataObject;
 import fr.paris.lutece.plugins.ticketing.business.category.TicketCategory;
@@ -131,7 +132,7 @@ public class TicketDAO
      * @param plugin the plugin
      * @return the collection
      */
-    public Collection<DataObject> selectAll( Plugin plugin )
+    public List<DataObject> selectAll( Plugin plugin )
     {
         List<Unit> units = UnitHome.findAll( );
 
@@ -301,6 +302,7 @@ public class TicketDAO
                 if ( optDaw.isPresent( ) )
                 {
                     DateActionWorkflow daw = optDaw.get( );
+                    ticket.setId( String.valueOf( daw.getIdTicket( ) ));
                     ticket.setDateAssignation( daw.getDateAssignment( ) );
                     ticket.setDateLastReAssignmentN1toN2( daw.getDateLastReAssignmentN1toN2( ) );
                     ticket.setDateLastClimb( daw.getDateLastClimbToN3( ) );
@@ -321,6 +323,12 @@ public class TicketDAO
         }
 
         return ticketList;
+    }
+
+    public List<String> selectIdTicketsList( Plugin plugin )
+    {
+        return selectAll( plugin ).stream( ).map( DataObject::getId ).collect( Collectors.toList( ) );
+
     }
 
 }
