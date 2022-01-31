@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class TicketDataSource extends AbstractDataSource
      * {@inheritDoc }
      */
     @Override
-    public List<DataObject> getDataObjects(  List<String> listIdDataObjects  )
+    public Collection<DataObject> fetchDataObjects()
     {
         Date date = new Date( );
         Timestamp currentTimestamp = new Timestamp(date.getTime());
@@ -93,6 +94,5 @@ public class TicketDataSource extends AbstractDataSource
         TicketDAO dao = new TicketDAO( );
         return dao.selectIdTicketsList( _plugin );
     }
-
 
 }

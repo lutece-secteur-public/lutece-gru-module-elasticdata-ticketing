@@ -494,28 +494,9 @@ public class TicketDataObject implements DataObject
         return _strId;
     }
 
-    @Override
     public void setId( String strId )
     {
         _strId = strId;
-    }
-
-    @Override
-    public String getParentId( )
-    {
-        return null;
-    }
-
-    @Override
-    public String getParentName( )
-    {
-        return null;
-    }
-
-    @Override
-    public String getDocumentTypeName( )
-    {
-        return "Ticket";
     }
 
 }
