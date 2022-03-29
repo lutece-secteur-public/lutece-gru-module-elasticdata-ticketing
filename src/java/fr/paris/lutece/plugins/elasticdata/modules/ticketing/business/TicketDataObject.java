@@ -108,6 +108,12 @@ public class TicketDataObject implements DataObject
     private Integer _nArrondissement;
 
     private String _strId;
+    
+    private String _strHeureCreation;
+    
+    private String _strAgentAssigne;
+
+    private String _strReference;
 
     /*
      * (non-Javadoc)
@@ -497,6 +503,36 @@ public class TicketDataObject implements DataObject
     public void setId( String strId )
     {
         _strId = strId;
+    }
+    
+    public String getHeureCreation( )
+    {
+        return _strHeureCreation;
+    }
+
+    public void setHeureCreation( String strHeureCreation )
+    {
+        this._strHeureCreation = strHeureCreation;
+    }
+
+    public String getAgentAssigne( )
+    {
+        return _strAgentAssigne;
+    }
+
+    public void setAgentAssigne( String strAgentAssigne )
+    {
+        this._strAgentAssigne = strAgentAssigne;
+    }
+
+    public String getReference( )
+    {
+        return _strReference;
+    }
+
+    public void setReference( String strReference )
+    {
+        this._strReference = strReference;
     }
 
 }
