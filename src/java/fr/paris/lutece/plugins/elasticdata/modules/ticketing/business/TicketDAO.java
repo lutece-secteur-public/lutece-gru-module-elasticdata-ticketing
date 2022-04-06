@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.elasticdata.modules.ticketing.business;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -62,10 +63,10 @@ public class TicketDAO
 {
 
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel"
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel join core_admin_user cau on id_admin_user=cau.id_user"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
 
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel WHERE date_update > DATE_SUB(NOW(), INTERVAL 1 DAY )";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel join core_admin_user cau on id_admin_user=cau.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL 1 DAY )";
 
 
     /**
@@ -238,6 +239,11 @@ public class TicketDAO
         ticket.setCanal( daoUtil.getString( "label" ) );
         ticket.setStatut( daoUtil.getString( "name" ) );
         ticket.setArrondissement( daoUtil.getInt( "arrondissement" ) );
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        ticket.setHeureCreation( sdf.format( daoUtil.getDate( "date_create" ) ) );
+        ticket.setAgentAssigne( daoUtil.getString( "assigned_user" ) );
+        ticket.setReference( daoUtil.getString( "ticket_reference" ) ); // à formater
 
         return ticket;
     }
