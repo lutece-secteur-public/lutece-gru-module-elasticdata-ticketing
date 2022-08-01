@@ -52,6 +52,7 @@ import fr.paris.lutece.plugins.ticketing.business.resourcehistory.DateActionWork
 import fr.paris.lutece.plugins.ticketing.business.resourcehistory.ResourceWorkflowHistoryDAO;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -61,12 +62,11 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class TicketDAO
 {
-
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel join core_admin_user cau on id_admin_user=cau.id_user"
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
 
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel join core_admin_user cau on id_admin_user=cau.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL 1 DAY )";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL ? DAY )";
 
 
     /**
@@ -157,6 +157,8 @@ public class TicketDAO
         List<Integer> ids = new ArrayList<>( );
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_TO_INDEX, plugin );
+        int nbJourEportElasticSearch = Integer.parseInt( DatastoreService.getDataValue( "ticketing.site_property.export.nb_jour_elastic_search", "1" ) );
+        daoUtil.setInt(1, nbJourEportElasticSearch);
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
