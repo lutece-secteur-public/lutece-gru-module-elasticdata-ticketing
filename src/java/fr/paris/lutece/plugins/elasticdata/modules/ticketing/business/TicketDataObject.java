@@ -115,6 +115,14 @@ public class TicketDataObject implements DataObject
 
     private String _strReference;
 
+    private String  _strIsVsp;
+
+    private String  _strIsSignalement;
+
+    private String  _strVspRulesList;
+
+    private String  _strCompletedNameUserBO;
+
     /*
      * (non-Javadoc)
      *
@@ -512,7 +520,7 @@ public class TicketDataObject implements DataObject
 
     public void setHeureCreation( String strHeureCreation )
     {
-        this._strHeureCreation = strHeureCreation;
+        _strHeureCreation = strHeureCreation;
     }
 
     public String getAgentAssigne( )
@@ -522,8 +530,9 @@ public class TicketDataObject implements DataObject
 
     public void setAgentAssigne( String strAgentAssigne )
     {
-        this._strAgentAssigne = strAgentAssigne;
+        _strAgentAssigne = strAgentAssigne;
     }
+
 
     public String getReference( )
     {
@@ -532,7 +541,75 @@ public class TicketDataObject implements DataObject
 
     public void setReference( String strReference )
     {
-        this._strReference = strReference;
+        _strReference = strReference;
+    }
+
+    /**
+     * @return the _strIsVsp
+     */
+    public String getIsVsp( )
+    {
+        return _strIsVsp;
+    }
+
+    /**
+     * @param strIsVsp
+     *            the _strIsVsp to set
+     */
+    public void setIsVsp( String strIsVsp )
+    {
+        _strIsVsp = strIsVsp;
+    }
+
+    /**
+     * @return the _strIsSignalement
+     */
+    public String getIsSignalement( )
+    {
+        return _strIsSignalement;
+    }
+
+    /**
+     * @param strIsSignalement
+     *            the _strIsSignalement to set
+     */
+    public void setIsSignalement( String isSignalement )
+    {
+        _strIsSignalement = isSignalement;
+    }
+
+    /**
+     * @return the _strVspRulesList
+     */
+    public String getVspRulesListWithPipe( )
+    {
+        return _strVspRulesList;
+    }
+
+    /**
+     * @param strVspRulesList
+     *            the _strVspRulesList to set
+     */
+    public void setVspRulesListWithPipe( String strVspRulesList )
+    {
+        _strVspRulesList = strVspRulesList;
+    }
+
+    /**
+     * @return the _strCompletedNameUserBO
+     */
+    public String getCompletedNameUserBO( )
+    {
+        return _strCompletedNameUserBO;
+    }
+
+    /**
+     * @param strCompletedNameUserBO
+     *            the _strCompletedNameUserBO to set
+     */
+    public void setCompletedNameUserBO( String strCompletedNameUserBO )
+    {
+        _strCompletedNameUserBO = strCompletedNameUserBO;
     }
 
 }
