@@ -581,7 +581,7 @@ public class TicketDataObject implements DataObject
     /**
      * @return the _strVspRulesList
      */
-    public String getVspRulesListWithPipe( )
+    public String getVspRulesList( )
     {
         return _strVspRulesList;
     }
@@ -590,7 +590,7 @@ public class TicketDataObject implements DataObject
      * @param strVspRulesList
      *            the _strVspRulesList to set
      */
-    public void setVspRulesListWithPipe( String strVspRulesList )
+    public void setVspRulesList( String strVspRulesList )
     {
         _strVspRulesList = strVspRulesList;
     }

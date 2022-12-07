@@ -54,8 +54,6 @@ import fr.paris.lutece.plugins.ticketing.business.vsprule.VspRule;
 import fr.paris.lutece.plugins.ticketing.business.vsprule.VspRuleHome;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -67,10 +65,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class TicketDAO
 {
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, id_admin_BO_init  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user"
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
 
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, id_admin_BO_init  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL ? DAY )";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL ? DAY )";
 
 
     /**
@@ -118,7 +116,7 @@ public class TicketDAO
             {
                 try
                 {
-                    TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap, vspRulesList );
+                    TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
                     ids.add( ticket.getIdTicket( ) );
                     ticketDataObjectList.add( ticket );
                 } catch ( Exception e )
@@ -172,7 +170,7 @@ public class TicketDAO
             {
                 try
                 {
-                    TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap, vspRulesList );
+                    TicketDataObject ticket = dataToTicket( daoUtil, catMap, unitMap );
                     ids.add( ticket.getIdTicket( ) );
                     ticketDataObjectList.add( ticket );
                 } catch ( Exception e )
@@ -195,7 +193,7 @@ public class TicketDAO
      *            the unit map
      * @return the ticket data object
      */
-    private static TicketDataObject dataToTicket( DAOUtil daoUtil, Map<Integer, TicketCategory> catMap, Map<Integer, Unit> unitMap, List<VspRule> vspRulesList )
+    private static TicketDataObject dataToTicket( DAOUtil daoUtil, Map<Integer, TicketCategory> catMap, Map<Integer, Unit> unitMap )
     {
         TicketDataObject ticket = new TicketDataObject( );
         TicketCategory category = catMap.get( daoUtil.getInt( "id_ticket_category" ) );
@@ -257,37 +255,8 @@ public class TicketDAO
         ticket.setIsSignalement( signalement == 0 ? "non" : "oui" );
         int vsp = daoUtil.getInt( "vous_simplifier_paris" );
         ticket.setIsVsp( vsp == 0 ? "non" : "oui" );
-        String idsVspRules = daoUtil.getString( "vsp_rule" );
-        if ( vsp == 1 )
-        {
-            String[] idsVspRulesArray = idsVspRules.split( ";" );
-            StringBuilder vspRulesLabels = new StringBuilder();
-            for ( int i = 0; i < idsVspRulesArray.length; i++ )
-            {
-                if( i != 0 ) {
-                    vspRulesLabels.append( " | " );
-                }
-                VspRule vspRuleSelected = VspRuleHome.findByPrimaryKey( Integer.parseInt( idsVspRulesArray[i] ) );
-                vspRulesLabels.append(  vspRuleSelected.getLabel( ) );
-            }
-            ticket.setVspRulesListWithPipe( vspRulesLabels.toString( ) );
-        }
-        else
-        {
-            ticket.setVspRulesListWithPipe( "" );
-        }
-
-        int idadminBOinit = daoUtil.getInt( "id_admin_BO_init" );
-
-        if ( idadminBOinit > 0 )
-        {
-            AdminUser adminUser = AdminUserHome.findByPrimaryKey( idadminBOinit );
-            ticket.setCompletedNameUserBO( adminUser.getFirstName( ) + " " + adminUser.getLastName( ) );
-        }
-        else
-        {
-            ticket.setCompletedNameUserBO( "" );
-        }
+        ticket.setVspRulesList( daoUtil.getString( "vsp_rule" ) );
+        ticket.setCompletedNameUserBO( daoUtil.getString( "bo_init_user" ) );
 
         return ticket;
     }
