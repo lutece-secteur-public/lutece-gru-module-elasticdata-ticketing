@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>module-elasticdata-ticketing</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>1.0.17-SNAPSHOT</version>
+    <version>1.0.18-SNAPSHOT</version>
     <name>Lutece elasticdata ticketing module</name>
     
     <properties>
