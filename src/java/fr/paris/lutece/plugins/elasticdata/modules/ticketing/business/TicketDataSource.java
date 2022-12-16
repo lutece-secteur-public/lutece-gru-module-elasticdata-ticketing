@@ -62,7 +62,6 @@ public class TicketDataSource extends AbstractDataSource
     /**
      * {@inheritDoc }
      */
-    @Override
     public Collection<DataObject> fetchDataObjects()
     {
         Date date = new Date( );
@@ -94,5 +93,6 @@ public class TicketDataSource extends AbstractDataSource
         TicketDAO dao = new TicketDAO( );
         return dao.selectIdTicketsList( _plugin );
     }
+
 
 }
