@@ -123,6 +123,8 @@ public class TicketDataObject implements DataObject
 
     private String  _strCompletedNameUserBO;
 
+    private Date    _dateUpdate;
+
     /*
      * (non-Javadoc)
      *
@@ -610,6 +612,27 @@ public class TicketDataObject implements DataObject
     public void setCompletedNameUserBO( String strCompletedNameUserBO )
     {
         _strCompletedNameUserBO = strCompletedNameUserBO;
+    }
+
+    /**
+     * Gets the date update.
+     *
+     * @return the _dateUpdate
+     */
+    public Date getDateUpdate( )
+    {
+        return _dateUpdate;
+    }
+
+    /**
+     * Sets the date update.
+     *
+     * @param _dateUpdate
+     *            the _dateUpdate to set
+     */
+    public void setDateUpdate( Date _dateUpdate )
+    {
+        this._dateUpdate = _dateUpdate;
     }
 
 }
