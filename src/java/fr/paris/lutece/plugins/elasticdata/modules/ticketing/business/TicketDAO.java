@@ -65,10 +65,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class TicketDAO
 {
     /** The Constant SQL_QUERY_SELECTALL. */
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user, date_update  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user"
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX_INCREMENTALLY = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user, date_update, nomenclature  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user"
             + " WHERE ticket.date_update > ? OR ticket.date_create > ? OR ticket.date_close > ?";
 
-    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user, date_update  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL ? DAY )";
+    private static final String SQL_QUERY_SELECTALL_TO_INDEX               = "SELECT id_ticket_category, date_create, date_close, id_unit, guid, id_ticket, channel.label label, s.name name, arrondissement, ticket_reference, CONCAT(cau.first_name, ' ', cau.last_name) as assigned_user, vous_simplifier_paris, signalement, vsp_rule, CONCAT(cau2.first_name, ' ', cau2.last_name) as bo_init_user, date_update, nomenclature  FROM ticketing_ticket ticket join workflow_resource_workflow r on r.id_resource=ticket.id_ticket join workflow_state s on s.id_state = r.id_state join ticketing_channel channel on channel.id_channel=ticket.id_channel left join core_admin_user cau on id_admin_user=cau.id_user left join core_admin_user cau2 on id_admin_BO_init=cau2.id_user WHERE date_update > DATE_SUB(NOW(), INTERVAL ? DAY )";
 
 
     /**
@@ -259,7 +259,7 @@ public class TicketDAO
         ticket.setCompletedNameUserBO( daoUtil.getString( "bo_init_user" ) );
 
         ticket.setDateUpdate( ( daoUtil.getDate( "date_update" ) ) );
-
+        ticket.setNomenclature( ( daoUtil.getString( "nomenclature" ) ) );
 
         return ticket;
     }
