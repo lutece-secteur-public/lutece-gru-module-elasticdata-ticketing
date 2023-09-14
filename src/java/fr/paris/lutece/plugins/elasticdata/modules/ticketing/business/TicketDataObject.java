@@ -125,6 +125,8 @@ public class TicketDataObject implements DataObject
 
     private Date    _dateUpdate;
 
+    private String  _strNomenclature;
+
     /*
      * (non-Javadoc)
      *
@@ -633,6 +635,25 @@ public class TicketDataObject implements DataObject
     public void setDateUpdate( Date _dateUpdate )
     {
         this._dateUpdate = _dateUpdate;
+    }
+
+    /**
+     * Gets the nomenclature.
+     *
+     * @return the _strNomenclature
+     */
+    public String getNomenclature( )
+    {
+        return _strNomenclature;
+    }
+
+    /**
+     * @param nomenclature
+     *            the _strNomenclature to set
+     */
+    public void setNomenclature( String nomenclature )
+    {
+        _strNomenclature = nomenclature;
     }
 
 }
