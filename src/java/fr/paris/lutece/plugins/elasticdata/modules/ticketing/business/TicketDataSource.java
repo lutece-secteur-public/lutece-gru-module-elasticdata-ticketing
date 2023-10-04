@@ -56,16 +56,16 @@ public class TicketDataSource extends AbstractDataSource
     private static final String KEY_DATE_LAST_INDEXATION = "ticketing.configuration.date.last.indexation";
 
     /** The plugin. */
-    private static Plugin       _plugin     = PluginService.getPlugin( PLUGIN_NAME );
+    private static Plugin _plugin = PluginService.getPlugin( PLUGIN_NAME );
 
     /**
      * {@inheritDoc }
      */
-    public Collection<DataObject> fetchDataObjects()
+    public Collection<DataObject> fetchDataObjects( )
     {
         Date date = new Date( );
-        Timestamp currentTimestamp = new Timestamp(date.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Timestamp currentTimestamp = new Timestamp( date.getTime( ) );
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         String currentDate = sdf.format( currentTimestamp );
 
         TicketDAO dao = new TicketDAO( );
@@ -92,6 +92,5 @@ public class TicketDataSource extends AbstractDataSource
         TicketDAO dao = new TicketDAO( );
         return dao.selectIdTicketsList( _plugin );
     }
-
 
 }
