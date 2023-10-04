@@ -44,88 +44,88 @@ public class TicketDataObject implements DataObject
 {
 
     /** The str domaine. */
-    private String  _strDomaine;
+    private String _strDomaine;
 
     /** The str thematique. */
-    private String  _strThematique;
+    private String _strThematique;
 
     /** The date create. */
-    private Date    _dateCreate;
+    private Date _dateCreate;
 
     /** The date close. */
-    private Date    _dateClose;
+    private Date _dateClose;
 
     /** The str entite. */
-    private String  _strEntite;
+    private String _strEntite;
 
     /** The n anciennete. */
-    private long    _nAnciennete;
+    private long _nAnciennete;
 
     /** The n delai reponse. */
-    private long    _nDelaiReponse;
+    private long _nDelaiReponse;
 
     /** The str guid. */
-    private String  _strGuid;
+    private String _strGuid;
 
     private Integer _idTicket;
 
-    private String  _strSousThematique;
+    private String _strSousThematique;
 
-    private String  _strStatut;
+    private String _strStatut;
 
-    private String  _strCanal;
+    private String _strCanal;
 
-    private String  _strLocalisation;
+    private String _strLocalisation;
 
-    private Date    _dDateAssignment;
+    private Date _dDateAssignment;
 
-    private Date    _dDateLastReAssignmentN1toN2;
+    private Date _dDateLastReAssignmentN1toN2;
 
-    private Date    _dDateLastClimb;
+    private Date _dDateLastClimb;
 
-    private Date    _dDateLastResponseN3;
+    private Date _dDateLastResponseN3;
 
-    private Date    _dDateLastSollicitationATCM;
+    private Date _dDateLastSollicitationATCM;
 
-    private Date    _dDateLastResponseATCM;
+    private Date _dDateLastResponseATCM;
 
-    private Date    _dDateLastAdditionalRequest;
+    private Date _dDateLastAdditionalRequest;
 
-    private Date    _dDateLastAdditionalRequestResponse;
+    private Date _dDateLastAdditionalRequestResponse;
 
-    private Date    _dDateLastAssignmentN2toN1;
+    private Date _dDateLastAssignmentN2toN1;
 
-    private String  _strDelayPriseEnCharge;
+    private String _strDelayPriseEnCharge;
 
-    private String  _strDelayReassignation;
+    private String _strDelayReassignation;
 
-    private String  _strDelayN3;
+    private String _strDelayN3;
 
-    private String  _strDelayATCM;
+    private String _strDelayATCM;
 
-    private String  _strDelayComplement;
+    private String _strDelayComplement;
 
     private Integer _nArrondissement;
 
     private String _strId;
-    
+
     private String _strHeureCreation;
-    
+
     private String _strAgentAssigne;
 
     private String _strReference;
 
-    private String  _strIsVsp;
+    private String _strIsVsp;
 
-    private String  _strIsSignalement;
+    private String _strIsSignalement;
 
-    private String  _strVspRulesList;
+    private String _strVspRulesList;
 
-    private String  _strCompletedNameUserBO;
+    private String _strCompletedNameUserBO;
 
-    private Date    _dateUpdate;
+    private Date _dateUpdate;
 
-    private String  _strNomenclature;
+    private String _strNomenclature;
 
     /*
      * (non-Javadoc)
@@ -516,7 +516,7 @@ public class TicketDataObject implements DataObject
     {
         _strId = strId;
     }
-    
+
     public String getHeureCreation( )
     {
         return _strHeureCreation;
@@ -536,7 +536,6 @@ public class TicketDataObject implements DataObject
     {
         _strAgentAssigne = strAgentAssigne;
     }
-
 
     public String getReference( )
     {
