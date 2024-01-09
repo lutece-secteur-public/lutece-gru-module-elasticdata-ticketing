@@ -127,6 +127,8 @@ public class TicketDataObject implements DataObject
 
     private String _strNomenclature;
 
+    private String  _strVspEntityName;
+
     /*
      * (non-Javadoc)
      *
@@ -653,6 +655,25 @@ public class TicketDataObject implements DataObject
     public void setNomenclature( String nomenclature )
     {
         _strNomenclature = nomenclature;
+    }
+
+    /**
+     * Gets the entity name who done vsp
+     *
+     * @return the _strVspEntityName
+     */
+    public String getVspEntityName( )
+    {
+        return _strVspEntityName;
+    }
+
+    /**
+     * @param vspEntityName
+     *            the vspEntityName to set
+     */
+    public void setVspEntityName( String vspEntityName )
+    {
+        _strVspEntityName = vspEntityName;
     }
 
 }
