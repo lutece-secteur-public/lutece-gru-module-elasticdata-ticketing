@@ -129,6 +129,8 @@ public class TicketDataObject implements DataObject
 
     private String  _strVspEntityName;
 
+    private String  _strCuid;
+
     /*
      * (non-Javadoc)
      *
@@ -674,6 +676,25 @@ public class TicketDataObject implements DataObject
     public void setVspEntityName( String vspEntityName )
     {
         _strVspEntityName = vspEntityName;
+    }
+
+    /**
+     * Gets the cuid id customer
+     *
+     * @return the _strCuid
+     */
+    public String getCuid( )
+    {
+        return _strCuid;
+    }
+
+    /**
+     * @param cuid
+     *            the cuid id customer to set
+     */
+    public void setCuid( String cuid )
+    {
+        _strCuid = cuid;
     }
 
 }
