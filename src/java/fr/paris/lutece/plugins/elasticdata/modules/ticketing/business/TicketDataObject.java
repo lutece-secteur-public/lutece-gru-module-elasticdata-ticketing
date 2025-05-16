@@ -131,6 +131,8 @@ public class TicketDataObject implements DataObject
 
     private String  _strCuid;
 
+    private String  _strMessage;
+
     /*
      * (non-Javadoc)
      *
@@ -695,6 +697,24 @@ public class TicketDataObject implements DataObject
     public void setCuid( String cuid )
     {
         _strCuid = cuid;
+    }
+
+    /**
+     * Gets the message ticket comment
+     *
+     * @return the message ticket comment
+     */
+    public String getMessage( )
+    {
+        return _strMessage;
+    }
+
+    /**
+     * @param message the message ticket comment to set
+     */
+    public void setMessage( String message )
+    {
+        _strMessage = message;
     }
 
 }
