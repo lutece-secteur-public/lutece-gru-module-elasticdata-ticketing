@@ -8,7 +8,7 @@
        <bean id="elasticdata-ticketing.ticketDataSource" class="fr.paris.lutece.plugins.elasticdata.modules.ticketing.business.TicketDataSource" >
            <property name="id" value="TicketDataSource" />
            <property name="name" value="Base des tickets" />
-           <property name="targetIndexName" value="tickets" />
+           <property name="targetIndexName" value="g88_tickets" />
            <property name="fullIndexingDaemon" value="true" />
        </bean>
 
