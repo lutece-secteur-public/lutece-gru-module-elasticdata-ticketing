@@ -133,6 +133,12 @@ public class TicketDataObject implements DataObject
 
     private String  _strMessage;
 
+    private String  _strLastEntityN3Name;
+
+    private String  _strLastEntityAssignedName;
+
+    private String  _strQuatierLabel;
+
     /*
      * (non-Javadoc)
      *
@@ -715,6 +721,61 @@ public class TicketDataObject implements DataObject
     public void setMessage( String message )
     {
         _strMessage = message;
+    }
+
+    /**
+     * Gets the last entity n3 name.
+     *
+     * @return the last entity n3 name
+     */
+    public String getLastEntityN3Name( )
+    {
+        return _strLastEntityN3Name;
+    }
+
+    /**
+     * @param lastEntityN3Name
+     *            the lastEntityN3Name to set
+     */
+    public void setLastEntityN3Name( String lastEntityN3Name )
+    {
+        _strLastEntityN3Name = lastEntityN3Name;
+    }
+
+    /**
+     * Gets the last entity assigned name.
+     *
+     * @return the last entity assigned name
+     */
+    public String getLastEntityAssignedName( )
+    {
+        return _strLastEntityAssignedName;
+    }
+
+    /**
+     * @param lastEntityAssignedName the lastEntityAssignedName to set
+     */
+    public void setLastEntityAssignedName( String lastEntityAssignedName )
+    {
+        _strLastEntityAssignedName = lastEntityAssignedName;
+    }
+
+    /**
+     * Gets the quatier label.
+     *
+     * @return the quatier label
+     */
+    public String getQuatierLabel( )
+    {
+        return _strQuatierLabel;
+    }
+
+    /**
+     * @param quatierLabel the quatierLabel to set
+     */
+    public void setQuatierLabel( String quatierLabel )
+    {
+        _strQuatierLabel = quatierLabel;
     }
 
 }
